@@ -40,10 +40,41 @@ ctest
 ```
 
 ## Структура проекта
-`include/`    заголовочные файлы
-`src/`        исходный код
-`tests/`      тесты
-`resources/`  текстовые документы
+```
+search_server
+│
+├── include/        заголовочные файлы
+│   ├── ConverterJSON.h
+│   ├── InvertedIndex.h
+│   ├── SearchServer.h
+│   ├── constantsSearchServer.h
+│   └── utilsSearchServer.h
+│
+├── src/            исходный код
+│   ├── ConverterJSON.cpp
+│   ├── InvertedIndex.cpp
+│   ├── SearchServer.cpp
+│   ├── utilsSearchServer.cpp
+│   └── main.cpp
+│
+├── tests/          тесты GoogleTest
+│   ├── test_converter_json.cpp
+│   ├── test_inverted_index.cpp
+│   ├── test_search_server.cpp
+│   └── test_utils_search_server.cpp
+│
+├── resources/      текстовые документы
+│   ├── file001.txt
+│   ├── file002.txt
+│   ├── file003.txt
+│   └── file004.txt
+│
+├── CMakeLists.txt
+├── config.json
+├── requests.json
+└── README.md
+```
+
 
 ## Примеры входных и выходных файлов JSON
 Пример config.json

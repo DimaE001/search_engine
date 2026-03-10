@@ -139,23 +139,19 @@ The project consists of several main components:
 ```mermaid
 flowchart LR
 
-ConfigJSON[config.json]
-RequestsJSON[requests.json]
+ConfigJSON[config.json] --> ConverterJSON[ConverterJSON]
+RequestsJSON[requests.json] --> ConverterJSON
 
-ConverterJSON
-InvertedIndex
-SearchServer
-AnswersJSON[answers.json]
-
-ConfigJSON --> ConverterJSON
-RequestsJSON --> ConverterJSON
+subgraph Core
+    InvertedIndex[InvertedIndex]
+    SearchServer[SearchServer]
+end
 
 ConverterJSON --> InvertedIndex
-InvertedIndex --> SearchServer
 ConverterJSON --> SearchServer
-
+InvertedIndex --> SearchServer
 SearchServer --> ConverterJSON
-ConverterJSON --> AnswersJSON
+ConverterJSON --> AnswersJSON[answers.json]
 ```
 
 ## Relevance

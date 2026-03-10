@@ -37,13 +37,14 @@ cmake --build build
 
 ## Run
 ```bash
-./build/search_engine
+cd build
+search_engine
 ```
 
 ## Run tests
 ```bash
 cd build
-ctest
+search_engine_tests
 ```
 
 ## Project Structure

@@ -29,7 +29,7 @@ This project was implemented as part of the "C++ Developer" course.
 
 ## Build 
 ```bash
-git clone https://github.com/DimaE001/search_server
+git clone https://github.com/DimaE001/search_engine
 cd search_engine
 cmake -S . -B build
 cmake --build build

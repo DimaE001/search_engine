@@ -1,69 +1,69 @@
-# Search Server
-Учебный проект поискового движка, реализованный в рамках курса "Разработчик на C++".
+# Search Engine
+A training search engine project implemented as part of the "C++ Developer" course.
 
-## Возможности
-- чтение конфигурации JSON
-- построение инвертированного индекса
-- поиск документов
-- сортировка по релевантности
-- вывод результатов JSON
+## Features
+- reading JSON configuration
+- building an inverted index
+- document search
+- relevance ranking
+- JSON result output
 
-## Алгоритм поиска
-1. Индексация документов.
-2. Формирование инвертированного индекса.
-3. Разбор запроса на уникальные слова.
-4. Поиск документов, содержащих все слова запроса.
-5. Вычисление релевантности.
-6. Сортировка результатов.
+## Search Algorithm
+1. Document indexing.
+2. Building an inverted index.
+3. Parsing the query into unique words.
+4. Searching for documents containing all query words.
+5. Calculating relevance.
+6. Sorting results.
 
-## Технологии
+## Technologies
 - C++ 17
 - CMake
 - nlohmann/json
 - GoogleTest
 
-## Сборка программы 
+## Build 
 ```bash
 cmake -S . -B build
 cmake --build build
 ```
 
-## Запуск программы
+## Run
 ```bash
 ./build/search_engine
 ```
 
-## Запуск тестов
+## Run tests
 ```bash
 cd build
 ctest
 ```
 
-## Структура проекта
+## Project Structure
 ```
 search_server
 │
-├── include/        заголовочные файлы
+├── include/        header files
 │   ├── ConverterJSON.h
 │   ├── InvertedIndex.h
 │   ├── SearchServer.h
 │   ├── constantsSearchServer.h
 │   └── utilsSearchServer.h
 │
-├── src/            исходный код
+├── src/            source files
 │   ├── ConverterJSON.cpp
 │   ├── InvertedIndex.cpp
 │   ├── SearchServer.cpp
 │   ├── utilsSearchServer.cpp
 │   └── main.cpp
 │
-├── tests/          тесты GoogleTest
+├── tests/          GoogleTest tests
 │   ├── test_converter_json.cpp
 │   ├── test_inverted_index.cpp
 │   ├── test_search_server.cpp
 │   └── test_utils_search_server.cpp
 │
-├── resources/      текстовые документы
+├── resources/      text documents
 │   ├── file001.txt
 │   ├── file002.txt
 │   ├── file003.txt
@@ -76,8 +76,8 @@ search_server
 ```
 
 
-## Примеры входных и выходных файлов JSON
-Пример config.json
+## Examples of Input and Output JSON Files
+Example config.json
 ```json
 {
   "config": {
@@ -92,7 +92,7 @@ search_server
 }
 ```
 
-Пример requests.json
+Example requests.json
 ```json
 {
   "requests": [
@@ -102,7 +102,7 @@ search_server
 }
 ```
 
-Пример answers.json
+Example answers.json
 ```json
 {
   "answers": {
@@ -120,13 +120,13 @@ search_server
 }
 ```
 
-## Архитектура
+## Architecture
 
-Проект состоит из нескольких основных компонентов:
-- **ConverterJSON**     чтение конфигурации и запросов из JSON и запись результатов.
-- **InvertedIndex**     построение инвертированного индекса документов.
-- **SearchServer**      обработка поисковых запросов и вычисление релевантности.
-- **utilsSearchServer** вспомогательные функции проверки документов и запросов.
+The project consists of several main components:
+- **ConverterJSON** - reads configuration and requests from JSON files and writes results.
+- **InvertedIndex** - builds an inverted index of documents.
+- **SearchServer** - processes search queries and calculates relevance.
+- **utilsSearchServer** - helper functions for validating documents and queries.
 
 ```mermaid
 flowchart LR
@@ -150,14 +150,14 @@ SearchServer --> ConverterJSON
 ConverterJSON --> AnswersJSON
 ```
 
-## Релевантность
-Релевантность документа вычисляется как
+## Relevance
+Document relevance is calculated as:
 
 `rank = count / max_count`
-где
-- `count`     количество вхождений слов запроса в документ
-- `max_count` максимальное количество вхождений среди всех найденных документов
+where
+- `count` - number of occurrences of query words in the document
+- `max_count` - the maximum number of occurrences among all found documents
 
-Результаты сортируются:
-1. по убыванию `rank`
-2. при равенстве по возрастанию `doc_id`
+Results are sorted:
+1. by decreasing `rank`
+2. if equal, by increasing `doc_id`

@@ -1,5 +1,6 @@
 # Search Engine
-A training search engine project implemented as part of the "C++ Developer" course.
+A simple console search engine written in C++.  
+This project was implemented as part of the "C++ Developer" course.
 
 ## Features
 - reading JSON configuration
@@ -16,14 +17,20 @@ A training search engine project implemented as part of the "C++ Developer" cour
 5. Calculating relevance.
 6. Sorting results.
 
+## Requirements
+- C++17 compatible compiler
+- CMake 3.10+
+
 ## Technologies
-- C++ 17
+- C++17
 - CMake
 - nlohmann/json
-- GoogleTest
+- Google Test
 
 ## Build 
 ```bash
+git clone <repository-url>
+cd search_engine
 cmake -S . -B build
 cmake --build build
 ```
@@ -77,7 +84,7 @@ search_server
 
 
 ## Examples of Input and Output JSON Files
-Example config.json
+Example `config.json`
 ```json
 {
   "config": {
@@ -92,7 +99,7 @@ Example config.json
 }
 ```
 
-Example requests.json
+Example `requests.json`
 ```json
 {
   "requests": [
@@ -102,7 +109,7 @@ Example requests.json
 }
 ```
 
-Example answers.json
+Example `answers.json`
 ```json
 {
   "answers": {
@@ -153,7 +160,7 @@ ConverterJSON --> AnswersJSON
 ## Relevance
 Document relevance is calculated as:
 
-`rank = count / max_count`
+rank = count / max_count
 where
 - `count` - number of occurrences of query words in the document
 - `max_count` - the maximum number of occurrences among all found documents
@@ -161,3 +168,76 @@ where
 Results are sorted:
 1. by decreasing `rank`
 2. if equal, by increasing `doc_id`
+
+
+## How the Search Engine Works
+
+The search engine operates in several stages.
+
+### 1. Loading configuration
+At startup the application reads the configuration file `config.json`.  
+This file contains:
+- search engine name and version
+- maximum number of results for a query
+- list of documents to be indexed
+
+### 2. Document indexing
+All documents listed in `config.json` are loaded and processed.
+Each document is split into words and an **inverted index** is created.
+The inverted index maps each word to a list of documents in which it appears.
+
+Example:
+
+milk sugar salt
+milk milk milk
+
+The index will contain:
+
+milk → (doc0,1) (doc1,3)  
+sugar → (doc0,1)  
+salt → (doc0,1)
+
+Where:
+- `doc_id` is the document identifier
+- `count` is the number of occurrences of the word in that document
+
+### 3. Processing search queries
+Search queries are read from `requests.json`.
+
+Each query:
+1. is split into words
+2. normalized
+3. duplicate words are removed
+
+Example:
+`milk milk water`
+becomes
+`milk water`
+
+### 4. Finding matching documents
+The search engine finds documents that contain **all query words**.
+
+For each word it retrieves the document list from the inverted index and intersects the results.
+
+### 5. Calculating relevance
+For each document an **absolute relevance** value is calculated:
+`absolute_relevance = sum(count of each query word)`
+
+Then a **relative relevance** is calculated:
+`rank = absolute_relevance / max_absolute_relevance`
+
+### 6. Sorting results
+Results are sorted by:
+
+1. descending relevance (`rank`)
+2. ascending `doc_id` if relevance is equal
+
+### 7. Writing results
+The final results are written to `answers.json`.
+
+## Complexity
+
+Indexing complexity: O(N * W)
+
+N - number of documents  
+W - average number of words per document

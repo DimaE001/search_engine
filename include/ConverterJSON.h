@@ -22,7 +22,7 @@ public:
     ConverterJSON()=default;
     
     // Метод получения из config.json настроек и проверки настроек.
-    void getConfigJson(std::string& path); 
+    void getConfigJson(const std::string& path); 
    
     // Метод получения содержимого файлов
     // @return Возвращает список с содержимым файлов перечисленных
@@ -36,7 +36,7 @@ public:
 
     // Метод получения запросов из файла requests.json
     // @return возвращает список запросов  из файла requests.json
-    std::vector<std::string> getRequests(std::string requestsPath_);
+    std::vector<std::string> getRequests(const std::string requestsPath_);
 
     // Метод получения результатов поиска в answers.json
     // результаты поисковых запросов

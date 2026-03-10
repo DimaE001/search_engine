@@ -4,6 +4,11 @@
 #include <cstddef>
 #include <string>
 
+// имена файлов конфигурация, запросы, выдача
+inline const std::string CONFIG_FILE = "config.json";
+inline const std::string REQUESTS_FILE = "requests.json";
+inline const std::string ANSWERS_FILE = "answers.json";
+
 // параметры движка
 inline const std::string ENGINE_LABEL = "SkillboxSearchEngine";
 inline const std::string ENGINE_VERSION = "1.1";

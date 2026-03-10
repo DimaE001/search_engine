@@ -10,7 +10,7 @@
 #include "ConverterJSON.h"
 #include "utilsSearchServer.h" 
 
-void ConverterJSON::getConfigJson(std::string& path){
+void ConverterJSON::getConfigJson(const std::string& path){
     std::ifstream file(path);
 
     if (!file.is_open()) {
@@ -93,7 +93,7 @@ size_t ConverterJSON::getResponsesLimit(){
     return maxResponses_;
 }
 
-std::vector<std::string> ConverterJSON::getRequests(std::string requestsPath_){
+std::vector<std::string> ConverterJSON::getRequests(const std::string requestsPath_){
     std::ifstream file(requestsPath_);
 
     if (!file.is_open()) {

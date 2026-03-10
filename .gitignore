@@ -3,6 +3,10 @@
 
 ### macOS ###
 # General
+build/
+.cache/
+.cache/
+*.code-workspace
 .DS_Store
 .AppleDouble
 .LSOverride

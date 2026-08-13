@@ -104,9 +104,9 @@ bool isNumber(const std::string& token) {
 
 const std::set<std::string>& stopWords() {
     static const std::set<std::string> words = {
-        "а", "але", "без", "был", "была", "были", "было", "будет", "в", "во",
-        "вже", "для", "до", "его", "ее", "если", "есть", "еще", "за", "и", "из",
-        "или", "как", "к", "на", "над", "не", "но", "о", "об", "от", "по", "под",
+        "а", "але", "был", "была", "были", "было", "будет", "в", "во",
+        "вже", "для", "его", "ее", "если", "есть", "еще", "за", "и", "из",
+        "или", "как", "к", "на", "над", "но", "о", "об", "от", "по", "под",
         "при", "про", "с", "со", "та", "так", "также", "там", "то", "у", "уже",
         "что", "щоб", "що", "це", "это", "як", "the", "and", "for", "with"
     };
@@ -127,7 +127,8 @@ const std::map<std::string, std::string>& aliases() {
         {"шахеди", "shahed"}, {"шахеды", "shahed"}, {"ппо", "пво"},
         {"зсу", "всу"}, {"рф", "россия"}, {"погибли", "погиб"},
         {"погибла", "погиб"}, {"загинули", "погиб"}, {"ранены", "ранен"},
-        {"поранені", "ранен"}, {"человека", "человек"}, {"человеков", "человек"}
+        {"поранені", "ранен"}, {"человека", "человек"}, {"человеков", "человек"},
+        {"нет", "без"}, {"немає", "без"}, {"ні", "не"}
     };
     return values;
 }
@@ -188,6 +189,18 @@ std::vector<std::string> TextNormalizer::extractNumbers(const std::string& text)
         }
     }
     return numbers;
+}
+
+std::vector<std::string> TextNormalizer::extractNegations(const std::string& text) const {
+    std::vector<std::string> negations;
+    for (const auto& token : tokenize(text)) {
+        if (token == "не" || token == "ни") {
+            negations.push_back("not");
+        } else if (token == "без") {
+            negations.push_back("absence");
+        }
+    }
+    return negations;
 }
 
 }  // namespace news_dedupe

@@ -64,12 +64,10 @@ bool NewsDedupeEngine::hasSameSourceIdentity(
 
 std::vector<ChangedFact> NewsDedupeEngine::changedFacts(
     const std::vector<std::string>& old_numbers,
-    const std::vector<std::string>& new_numbers
+    const std::vector<std::string>& new_numbers,
+    const std::vector<std::string>& old_negations,
+    const std::vector<std::string>& new_negations
 ) {
-    if (old_numbers == new_numbers) {
-        return {};
-    }
-
     std::vector<ChangedFact> changes;
     const std::size_t count = std::max(old_numbers.size(), new_numbers.size());
     changes.reserve(count);
@@ -79,6 +77,11 @@ std::vector<ChangedFact> NewsDedupeEngine::changedFacts(
         if (old_value != new_value) {
             changes.push_back({"number", old_value, new_value});
         }
+    }
+    if (old_negations != new_negations) {
+        const std::string old_value = old_negations.empty() ? "affirmative" : old_negations.front();
+        const std::string new_value = new_negations.empty() ? "affirmative" : new_negations.front();
+        changes.push_back({"negation", old_value, new_value});
     }
     return changes;
 }
@@ -212,6 +215,7 @@ NewsDedupeResponse NewsDedupeEngine::evaluate(const NewsDedupeRequest& request) 
 
     std::optional<NewsMatch> identity_match;
     const auto query_numbers = normalizer_.extractNumbers(query_text);
+    const auto query_negations = normalizer_.extractNegations(query_text);
     for (std::size_t index = 0; index < request.documents.size(); ++index) {
         const auto& document = request.documents[index];
         NewsMatch match;
@@ -221,7 +225,9 @@ NewsDedupeResponse NewsDedupeEngine::evaluate(const NewsDedupeRequest& request) 
         match.common_terms = commonTerms(query_counts, document_counts[index], weights);
         match.changed_facts = changedFacts(
             normalizer_.extractNumbers(documentText(document)),
-            query_numbers
+            query_numbers,
+            normalizer_.extractNegations(documentText(document)),
+            query_negations
         );
 
         if (hasSameSourceIdentity(request.query, document)) {

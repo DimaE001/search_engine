@@ -11,6 +11,7 @@ public:
     std::string normalize(const std::string& text) const;
     std::vector<std::string> tokenize(const std::string& text) const;
     std::vector<std::string> extractNumbers(const std::string& text) const;
+    std::vector<std::string> extractNegations(const std::string& text) const;
 };
 
 }  // namespace news_dedupe

@@ -25,7 +25,9 @@ private:
     static bool hasSameSourceIdentity(const NewsDocument& query, const NewsDocument& document);
     static std::vector<ChangedFact> changedFacts(
         const std::vector<std::string>& old_numbers,
-        const std::vector<std::string>& new_numbers
+        const std::vector<std::string>& new_numbers,
+        const std::vector<std::string>& old_negations,
+        const std::vector<std::string>& new_negations
     );
     static double similarity(
         const TokenCounts& query,

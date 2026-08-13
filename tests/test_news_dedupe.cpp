@@ -51,6 +51,27 @@ TEST(TextNormalizerTest, NormalizesRussianAndUkrainianEquivalentText) {
     );
 }
 
+TEST(TextNormalizerTest, KeepsMeaningfulModifiersOutOfStopWords) {
+    news_dedupe::TextNormalizer normalizer;
+
+    EXPECT_EQ(normalizer.normalize("Дом не разрушен"), "дом не разрушен");
+    EXPECT_EQ(normalizer.normalize("Без пострадавших до 10 утра"), "без пострадавших до 10 утра");
+    EXPECT_EQ(normalizer.normalize("Пострадавших нет"), "пострадавших без");
+}
+
+TEST(TextNormalizerTest, NormalizesEquivalentAbsenceMarkers) {
+    news_dedupe::TextNormalizer normalizer;
+
+    EXPECT_EQ(
+        normalizer.extractNegations("Обошлось без пострадавших"),
+        normalizer.extractNegations("Пострадавших нет")
+    );
+    EXPECT_EQ(
+        normalizer.extractNegations("Постраждалих немає"),
+        normalizer.extractNegations("Без постраждалих")
+    );
+}
+
 TEST(NewsDedupeEngineTest, DetectsCrossSourceDuplicate) {
     auto query = makeDocument(
         "telegram:source_a/10",
@@ -137,6 +158,31 @@ TEST(NewsDedupeEngineTest, ReviewsConflictingNumbersFromDifferentSources) {
 
     EXPECT_EQ(response.decision, news_dedupe::NewsDecision::Review);
     EXPECT_EQ(response.reason, "conflicting_facts");
+}
+
+TEST(NewsDedupeEngineTest, ReviewsOppositeClaimsFromDifferentSources) {
+    const auto document = makeDocument(
+        "telegram:source_a/10",
+        "source_a",
+        "10",
+        "После атаки дом разрушен"
+    );
+    const auto query = makeDocument(
+        "telegram:source_b/20",
+        "source_b",
+        "20",
+        "После атаки дом не разрушен"
+    );
+
+    const auto response = news_dedupe::NewsDedupeEngine().evaluate(makeRequest(query, document));
+
+    EXPECT_EQ(response.decision, news_dedupe::NewsDecision::Review);
+    EXPECT_EQ(response.reason, "conflicting_facts");
+    ASSERT_TRUE(response.best_match.has_value());
+    ASSERT_EQ(response.best_match->changed_facts.size(), 1);
+    EXPECT_EQ(response.best_match->changed_facts[0].type, "negation");
+    EXPECT_EQ(response.best_match->changed_facts[0].old_value, "affirmative");
+    EXPECT_EQ(response.best_match->changed_facts[0].new_value, "not");
 }
 
 TEST(NewsDedupeEngineTest, RejectsEmptyQuery) {

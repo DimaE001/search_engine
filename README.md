@@ -8,6 +8,22 @@ This project was implemented as part of the "C++ Developer" course.
 - document search
 - relevance ranking
 - JSON result output
+- an isolated C++ module for detecting duplicate and corrected news
+
+## News deduplication module
+
+The `news_dedupe` library is independent of the original console search mode. It
+normalizes Russian and Ukrainian UTF-8 text, ranks similar publications and returns one
+of four recommendations: `publish`, `duplicate`, `update` or `review`.
+
+The JSON CLI is only a transport adapter around the library:
+
+```bash
+./build/news_dedupe_cli --news-dedupe-stdin < request.json
+```
+
+The calling application owns its database and publication logic. The C++ module does
+not open SQLite and does not call Telegram APIs.
 
 ## Search Algorithm
 1. Document indexing.
@@ -56,14 +72,24 @@ search_server
 │   ├── InvertedIndex.h
 │   ├── SearchServer.h
 │   ├── constantsSearchServer.h
-│   └── utilsSearchServer.h
+│   ├── utilsSearchServer.h
+│   └── news_dedupe/
+│       ├── NewsDedupeEngine.h
+│       ├── NewsDedupeModels.h
+│       └── TextNormalizer.h
 │
 ├── src/            source files
 │   ├── ConverterJSON.cpp
 │   ├── InvertedIndex.cpp
 │   ├── SearchServer.cpp
 │   ├── utilsSearchServer.cpp
-│   └── main.cpp
+│   ├── main.cpp
+│   └── news_dedupe/
+│       ├── NewsDedupeEngine.cpp
+│       └── TextNormalizer.cpp
+│
+├── app/
+│   └── news_dedupe_cli.cpp
 │
 ├── tests/          GoogleTest tests
 │   ├── test_converter_json.cpp

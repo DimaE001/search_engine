@@ -4,6 +4,8 @@
 ### macOS ###
 # General
 build/
+build*/
+cmake-build-*/
 .cache/
 .cache/
 *.code-workspace
@@ -39,3 +41,5 @@ Temporary Items
 *.icloud
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
+CMakeUserPresets.json
+compile_commands.json
